@@ -1,6 +1,7 @@
 -- Write an SQL statement that shows the bidders and their bids on all items.
 -- The result table should have the following columns: bidders name, items id, 
 -- bids date, and the bid.
+USE Bid;
 
 SELECT 
     bidder.name AS bidder_name, 
