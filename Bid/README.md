@@ -1,102 +1,175 @@
-Bid Database
+# Bid Database SQL Scripts
 
-Overview
+## Overview
+This project contains SQL scripts for managing an auction bidding system. It includes table definitions, data insertion, queries for retrieving bidding information, a view for active bidding, a trigger for extending auction end dates, and a function for calculating company revenue.
 
-This SQL script sets up a database named Bid to manage an auction system. The database includes tables for items, bidders, and bids, as well as queries, views, triggers, and functions to manage and analyze auction data.
+## Database and Tables
+### 1. **Creating the Database**
+```sql
+CREATE DATABASE Bid;
+USE Bid;
+```
+This creates and selects the `Bid` database.
 
-Database Schema
+### 2. **Item Table**
+```sql
+CREATE TABLE item (
+    itemNumber INT NOT NULL PRIMARY KEY, 
+    name VARCHAR(20) NOT NULL, 
+    startingPrice INT NOT NULL, 
+    lastBidDate DATE NOT NULL, 
+    acceptedBid INT
+);
+```
+This table stores auction items with attributes like item number, name, starting price, last bid date, and accepted bid.
 
-Tables
+### 3. **Bidder Table**
+```sql
+CREATE TABLE bidder (
+    bidderNumber INT NOT NULL PRIMARY KEY, 
+    name VARCHAR(20) NOT NULL, 
+    address VARCHAR(20) NOT NULL, 
+    credit DECIMAL NOT NULL
+);
+```
+This table holds information about bidders, including their ID, name, address, and credit balance.
 
-item: Stores auction items.
+### 4. **Bid Table**
+```sql
+CREATE TABLE bid (
+    bidNumber INT NOT NULL PRIMARY KEY,
+    itemNumber INT NOT NULL,
+    bidderNumber INT NOT NULL,
+    bidDate DATE NOT NULL,
+    bid INT NOT NULL,
+    FOREIGN KEY (bidderNumber) REFERENCES bidder(bidderNumber),
+    FOREIGN KEY (itemNumber) REFERENCES item(itemNumber)
+);
+```
+This table records bids placed by bidders on items, tracking bid number, item, bidder, bid date, and bid amount.
 
-itemNumber (Primary Key)
+## Queries
+### 1. **Retrieve All Bidders and Their Bids**
+```sql
+SELECT 
+    bidder.name AS bidder_name, 
+    bid.itemNumber AS item_id, 
+    bid.bidDate AS bid_date, 
+    bid.bid AS bid_amount
+FROM 
+    bidder 
+INNER JOIN 
+    bid 
+ON 
+    bid.bidderNumber = bidder.bidderNumber;
+```
+This query fetches the bidders' names, item IDs, bid dates, and bid amounts.
 
-name
+### 2. **Count the Number of Bids per Item**
+```sql
+SELECT 
+    item.name AS item_name, 
+    COUNT(bid.bid) AS number_of_bids
+FROM 
+    item 
+LEFT JOIN 
+    bid 
+ON 
+    bid.itemNumber = item.itemNumber 
+GROUP BY 
+    item.name;
+```
+This query retrieves the total number of bids for each auction item.
 
-startingPrice
+## Views and Triggers
+### 3. **Creating a View for Active Biddings**
+```sql
+CREATE VIEW active_biddings AS
+SELECT 
+    item.itemNumber AS item_number, 
+    MAX(bid.bid) AS highest_bid
+FROM 
+    bid 
+INNER JOIN 
+    item 
+ON 
+    bid.itemNumber = item.itemNumber 
+WHERE 
+    bid.acceptedBid IS NULL 
+    AND bid.bidDate > CURDATE() 
+GROUP BY 
+    item.itemNumber;
+```
+This view displays active biddings with the item number and the current highest bid.
 
-lastBidDate
+### 4. **Trigger to Extend Auction End Date**
+```sql
+DROP TRIGGER IF EXISTS update_end_date;
+DELIMITER $$
+CREATE TRIGGER update_end_date
+AFTER INSERT ON bid
+FOR EACH ROW
+BEGIN
+    IF NEW.bidDate = (SELECT endDate FROM item WHERE itemNumber = NEW.itemNumber) THEN
+        UPDATE item 
+        SET endDate = ADDDATE(endDate, 1) 
+        WHERE itemNumber = NEW.itemNumber;
+    END IF;
+END$$
+DELIMITER ;
+```
+This trigger automatically extends an auction's end date by one day if a bid is placed on the end date.
 
-acceptedBid
+## Functions
+### 5. **Calculating Company Revenue**
+```sql
+DROP FUNCTION IF EXISTS calculate_revenue;
+DELIMITER $$
+CREATE FUNCTION calculate_revenue(xBidNumber INT)
+RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE revenue DECIMAL(10, 2);
+    DECLARE final_bid DECIMAL(10, 2);
+    
+    SELECT bid 
+    INTO final_bid 
+    FROM bid 
+    WHERE bidNumber = xBidNumber;
 
-bidder: Stores bidders' information.
+    IF final_bid < 1000 THEN
+        SET revenue = final_bid * 0.20;
+    ELSE
+        SET revenue = final_bid * 0.10;
+    END IF;
 
-bidderNumber (Primary Key)
+    RETURN revenue;
+END$$
+DELIMITER ;
+```
+This function calculates the company's revenue for completed bids, charging 20% for bids under 1000 SEK and 10% otherwise.
 
-name
+## Comprehensive Bidder-Item Query
+```sql
+SELECT 
+    bidder.name AS bidder_name, 
+    item.name AS item_name, 
+    bid.bid AS bid_amount
+FROM 
+    bidder 
+LEFT JOIN 
+    bid 
+ON 
+    bid.bidderNumber = bidder.bidderNumber 
+LEFT JOIN 
+    item 
+ON 
+    bid.itemNumber = item.itemNumber;
+```
+This query lists all bidders, the items they bid on, and their bid amounts, including bidders who haven't placed any bids.
 
-address
+## Sample Data
+The script includes predefined sample data for `item`, `bidder`, and `bid` tables, allowing easy testing of queries and logic.
 
-credit
-
-bid: Stores bids placed on items.
-
-bidNumber (Primary Key)
-
-itemNumber (Foreign Key referencing item)
-
-bidderNumber (Foreign Key referencing bidder)
-
-bidDate
-
-bid
-
-Features
-
-Data Queries
-
-List of Bidders and Their Bids:
-
-Displays bidder names, item IDs, bid dates, and bid amounts.
-
-Number of Bids per Auction Item:
-
-Shows item names and the number of bids received.
-
-Views
-
-active_biddings:
-
-Displays currently active bidding with the highest bid amount for each item.
-
-Triggers
-
-update_end_date:
-
-If a bid is placed on an item on its last bid date, the auction end date is extended by one day.
-
-Functions
-
-calculate_revenue(xBidNumber INT):
-
-Calculates the company's revenue from completed bids:
-
-20% commission for bids under 1000 SEK.
-
-10% commission for bids above 1000 SEK.
-
-Additional Queries
-
-Bidders and Items They Have Bid On:
-
-Shows all bidders, the items they bid on, and their bid amounts.
-
-Ensures bidders with no bids are still included.
-
-Usage
-
-Execute the script in an SQL environment that supports MySQL.
-
-Modify or extend the schema as needed for additional auction functionalities.
-
-Requirements
-
-MySQL database management system.
-
-Basic SQL knowledge to modify and query data.
-
-License
-
-This project is for educational purposes and can be modified as needed.
-
+## Conclusion
+This SQL project manages an auction system by storing bidders, items, and bids, while implementing queries, views, triggers, and functions to support bidding operations efficiently.
