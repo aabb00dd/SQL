@@ -29,10 +29,6 @@ This repository contains SQL scripts for managing a library database system. It 
 - `FineAmount(leaseNum)`: Calculates overdue fines based on the lease duration.
 - `CountBorrowed(ISBN)`: Determines how many times a book has been borrowed.
 
-## Usage
-1. Create the `Library` database and run the table creation scripts.
-2. Insert sample data into `Student`, `Book`, and `BookLease` tables.
-3. Use provided queries to analyze data, check borrowed books, overdue fines, and book availability.
-4. Utilize stored procedures and functions for managing leases efficiently.
+## License
+This project is proprietary and not available for public modification or distribution.
 
-This SQL script provides a comprehensive system for managing a library’s book leasing operations, ensuring accurate tracking of borrowed books and overdue penalties.
