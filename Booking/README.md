@@ -63,4 +63,4 @@ The database consists of the following tables:
 - Implement a trigger to update this column after each successful booking.
 
 ## License
-This project is open-source and available for modification and enhancement.
+This project is proprietary and not available for public modification or distribution.
