@@ -29,11 +29,5 @@ This project provides SQL scripts to manage an auction bidding system. It define
   - 20% commission for bids under 1000 SEK.
   - 10% commission for bids 1000 SEK or more.
 
-## Important Features
-- **Data Integrity:** Uses foreign keys to ensure bids reference valid bidders and items.
-- **Automatic Auction Extensions:** Prevents last-minute sniping by extending auction deadlines.
-- **Revenue Calculation:** Helps track company earnings from completed bids.
-- **Comprehensive Queries:** Supports analysis of bidder activity and bid statistics.
-
-## Conclusion
-This SQL script provides a structured and automated way to manage an auction system, ensuring proper data handling, fair bidding, and efficient revenue tracking.
+## License
+This project is proprietary and not available for public modification or distribution.
