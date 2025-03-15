@@ -62,8 +62,5 @@ The database consists of the following tables:
 - Add a column to track the number of times a customer has booked a car.
 - Implement a trigger to update this column after each successful booking.
 
-## Usage
-Run the SQL scripts sequentially in a MySQL database to create and populate the tables, execute queries, and test functions, procedures, and triggers.
-
 ## License
 This project is open-source and available for modification and enhancement.
