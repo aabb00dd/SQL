@@ -61,6 +61,3 @@ The database consists of the following tables:
 ### Triggers
 - Add a column to track the number of times a customer has booked a car.
 - Implement a trigger to update this column after each successful booking.
-
-## License
-This project is proprietary and not available for public modification or distribution.
