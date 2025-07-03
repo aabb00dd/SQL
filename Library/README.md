@@ -1,6 +1,6 @@
 # Library Database SQL Scripts
 
-This repository contains SQL scripts for managing a library database system. It includes table creation, queries, views, triggers, stored procedures, and functions to handle book leases, student records, and overdue fines.
+This is a SQL scripts for managing a library database system. It includes table creation, queries, views, triggers, stored procedures, and functions to handle book leases, student records, and overdue fines.
 
 ## Features
 
@@ -28,7 +28,4 @@ This repository contains SQL scripts for managing a library database system. It 
 ### 6. **Functions**
 - `FineAmount(leaseNum)`: Calculates overdue fines based on the lease duration.
 - `CountBorrowed(ISBN)`: Determines how many times a book has been borrowed.
-
-## License
-This project is proprietary and not available for public modification or distribution.
 
