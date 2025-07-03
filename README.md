@@ -10,3 +10,5 @@ The purpose of this project was to learn and demonstrate:
 - Writing SQL queries for data retrieval, insertion, updating, and deletion
 - Using constraints, joins, views, and other database features
 - Understanding normalization and schema design
+
+![Language](https://img.shields.io/badge/language-TSQL-blue)
