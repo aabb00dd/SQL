@@ -28,6 +28,3 @@ This project provides SQL scripts to manage an auction bidding system. It define
 - Defines a `FUNCTION` to compute revenue based on bid amounts:
   - 20% commission for bids under 1000 SEK.
   - 10% commission for bids 1000 SEK or more.
-
-## License
-This project is proprietary and not available for public modification or distribution.
