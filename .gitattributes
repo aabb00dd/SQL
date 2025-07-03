@@ -1,3 +1,3 @@
-Booking/*.sql linguist-language=TSQL
+Booking/*.sql linguist-language=SQL
 Bid/*.sql linguist-language=TSQL
 Library/*.sql linguist-language=TSQL
